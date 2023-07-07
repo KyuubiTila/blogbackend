@@ -1,8 +1,8 @@
 const express = require('express');
-const postRouter = require('./route/post/postRoutes');
-const userRouter = require('./route/user/userRoutes');
-const commentsRouter = require('./route/comments/commentsRoutes');
-const categoriesRouter = require('./route/categories/categoriesRoutes');
+const postRouter = require('./route/post/postRoutes.js');
+const userRouter = require('./route/user/userRoutes.js');
+const commentsRouter = require('./route/comments/commentsRoutes.js');
+const categoriesRouter = require('./route/categories/categoriesRoutes.js');
 require('dotenv').config();
 // postRouter
 // userRouter

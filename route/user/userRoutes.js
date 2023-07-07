@@ -1,83 +1,37 @@
 const express = require('express');
+const {
+  userRegisterController,
+  userLoginController,
+  userIndividualProfileController,
+  allUsersProfileController,
+  updateProfileController,
+  deleteProfileController,
+} = require('../../controllers/User/userController.js');
 
 const userRouter = express.Router();
 
 //REGISTER USER
 // POST/api/V1/users/register
-userRouter.post('/register', async (req, res) => {
-  try {
-    res.json({
-      status: 'success',
-      data: 'user registered',
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-});
+userRouter.post('/register', userRegisterController);
 
 // LOGIN USER
 // POST/api/V1/users/login
-userRouter.post('/login', async (req, res) => {
-  try {
-    res.json({
-      status: 'success',
-      data: 'user logged in',
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-});
+userRouter.post('/login', userLoginController);
 
 // VIEW INDIVIDUAL PROFILE
 // GET/api/V1/profile
-userRouter.get('/profile/:id', async (req, res) => {
-  try {
-    res.json({
-      status: 'success',
-      data: 'profile route',
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-});
+userRouter.get('/profile/:id', userIndividualProfileController);
 
 // FETCH ALL USERS
 // GET/api/V1/allUsers
-userRouter.get('/allUsers', async (req, res) => {
-  try {
-    res.json({
-      status: 'success',
-      data: 'all users route',
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-});
+userRouter.get('/allUsers', allUsersProfileController);
 
 // UPDATE INDIVIDUAL PROFILE
 // PUT/api/V1/users/:id
-userRouter.put('/:id', async (req, res) => {
-  try {
-    res.json({
-      status: 'success',
-      data: 'update user route',
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-});
+userRouter.put('/:id', updateProfileController);
 
 // DELETE INDIVIDUAL PROFILE
 // DELETE/api/V1/users/:id
-userRouter.delete('/:id', async (req, res) => {
-  try {
-    res.json({
-      status: 'success',
-      data: 'delete user route',
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-});
+userRouter.delete('/:id', deleteProfileController);
 
 module.exports = userRouter;
