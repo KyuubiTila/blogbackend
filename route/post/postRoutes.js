@@ -18,7 +18,7 @@ postRouter.get('/:id', fetchIndividualPost);
 
 // GET ALL POSTS
 // GET/api/V1/posts
-postRouter.get('posts', fetchAllPosts);
+postRouter.get('/', fetchAllPosts);
 
 // UPDATE INDIVIDUAL POST
 // PUT/api/V1/posts/:id
