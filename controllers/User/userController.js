@@ -1,5 +1,5 @@
+const bcrypt = require('bcryptjs');
 const User = require('../../model/User/User');
-
 //REGISTER USER
 const userRegisterController = async (req, res) => {
   const {
@@ -28,13 +28,14 @@ const userRegisterController = async (req, res) => {
     }
     // hash password
 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     // create user
-
     const user = await User.create({
       firstName,
       lastName,
       email,
-      password,
+      password: hashedPassword,
     });
 
     res.json({
@@ -48,7 +49,22 @@ const userRegisterController = async (req, res) => {
 
 // LOGIN USER
 const userLoginController = async (req, res) => {
+  const { email, password } = req.body;
   try {
+    // check if email exists
+    const checkEmail = await User.findOne({ email });
+    if (!checkEmail) {
+      return res.json({
+        msg: 'credentials not found',
+      });
+    }
+    // check validity of password
+    const checkPassword = await User.findOne({ password });
+    if (!checkPassword) {
+      return res.json({
+        msg: 'credentials not found',
+      });
+    }
     res.json({
       status: 'success',
       data: 'user logged in',
