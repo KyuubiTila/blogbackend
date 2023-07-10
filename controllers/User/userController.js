@@ -55,16 +55,34 @@ const userLoginController = async (req, res) => {
     const checkEmail = await User.findOne({ email });
     if (!checkEmail) {
       return res.json({
-        msg: 'credentials not found',
+        msg: 'invalid login credentials',
       });
     }
-    // check validity of password
-    const checkPassword = await User.findOne({ password });
-    if (!checkPassword) {
+
+    // verify password match
+    const isPasswordMatched = await bcrypt.compare(
+      password,
+      checkEmail.password
+    );
+
+    if (!isPasswordMatched) {
       return res.json({
-        msg: 'credentials not found',
+        msg: 'invalid login credentials',
       });
     }
+
+    // if (!checkEmail) {
+    //   return res.json({
+    //     msg: 'credentials not found',
+    //   });
+    // }
+    // check validity of password
+    // const checkPassword = await User.findOne({ password });
+    // if (!checkPassword) {
+    //   return res.json({
+    //     msg: 'credentials not found',
+    //   });
+    // }
     res.json({
       status: 'success',
       data: 'user logged in',
