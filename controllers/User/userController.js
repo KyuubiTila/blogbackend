@@ -1,9 +1,45 @@
+const User = require('../../model/User/User');
+
 //REGISTER USER
 const userRegisterController = async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    profilePicture,
+    email,
+    password,
+    // postCount,
+    // isBlocked,
+    // isAdmin,
+    // roles,
+    // viewdBy,
+    // followers,
+    // following,
+    // posts,
+    // active,
+  } = req.body;
   try {
+    // if email exist
+    const userFound = await User.findOne({ email });
+    if (userFound) {
+      return res.json({
+        msg: 'user already exist',
+      });
+    }
+    // hash password
+
+    // create user
+
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+
     res.json({
       status: 'success',
-      data: 'user registered',
+      data: user,
     });
   } catch (error) {
     res.json(error.message);

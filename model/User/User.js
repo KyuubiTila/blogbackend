@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 // create schema
 const userSchema = new mongoose.Schema(
   {
-    firstNAme: {
+    firstName: {
       type: String,
       required: [true, 'First Name is rquired'],
     },
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
     },
 
     postCount: {
-      type: number,
+      type: Number,
       default: 0,
     },
 

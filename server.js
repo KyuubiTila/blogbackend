@@ -15,6 +15,22 @@ console.log(app);
 
 // middlewares;
 // ----------
+app.use(express.json());
+
+// const userAuth = {
+//   isLogin: true,
+//   isAdmin: false,
+// };
+
+// app.use((req, res, next) => {
+//   if (userAuth.isLogin) {
+//     next();
+//   } else {
+//     res.json({
+//       message: 'invalid login',
+//     });
+//   }
+// });
 
 // ---------routes---------
 
