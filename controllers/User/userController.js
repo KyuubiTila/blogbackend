@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../../model/User/User');
 const generateToken = require('../../utils/generateToken');
+const getTokenFromHeader = require('../../utils/getTokenFromHeader');
 //REGISTER USER
 const userRegisterController = async (req, res) => {
   const {
@@ -102,7 +103,10 @@ const userLoginController = async (req, res) => {
 // VIEW INDIVIDUAL PROFILE
 const userIndividualProfileController = async (req, res) => {
   const { id } = req.params;
+  // console.log(req.headers);
   try {
+    const token = getTokenFromHeader(req);
+    console.log(token);
     const user = await User.findById(id);
     res.json({
       status: 'success',
