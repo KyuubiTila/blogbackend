@@ -102,12 +102,8 @@ const userLoginController = async (req, res) => {
 
 // VIEW INDIVIDUAL PROFILE
 const userIndividualProfileController = async (req, res) => {
-  const { id } = req.params;
-  // console.log(req.headers);
   try {
-    const token = getTokenFromHeader(req);
-    console.log(token);
-    const user = await User.findById(id);
+    const user = await User.findById(req.userAuth);
     res.json({
       status: 'success',
       data: user,

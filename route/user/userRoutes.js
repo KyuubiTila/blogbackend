@@ -19,8 +19,8 @@ userRouter.post('/register', userRegisterController);
 userRouter.post('/login', userLoginController);
 
 // VIEW INDIVIDUAL PROFILE
-// GET/api/V1/profile/:id
-userRouter.get('/profile/:id', isLoggedIn, userIndividualProfileController);
+// GET/api/V1/profile/
+userRouter.get('/profile/', isLoggedIn, userIndividualProfileController);
 
 // FETCH ALL USERS
 // GET/api/V1/allUsers
