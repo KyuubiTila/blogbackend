@@ -7,7 +7,7 @@ const {
   allUsersProfileController,
   updateProfileController,
   deleteProfileController,
-  profilePhotoUpload,
+  profilePhotoUploadController,
 } = require('../../controllers/User/userController.js');
 const isLoggedIn = require('../../middlewares/isLoggedin.js');
 const multer = require('multer');
@@ -36,11 +36,16 @@ userRouter.get('/allUsers', allUsersProfileController);
 userRouter.put('/:id', updateProfileController);
 
 // UPLOAD PROFILE PHOTO
-// POST/api/V1/users/:id
-userRouter.post('/:id', upload.single('profile'), profilePhotoUpload);
+// POST/api/V1/users/profile-photo-upload
+userRouter.post(
+  '/profile-photo-upload',
+  isLoggedIn,
+  upload.single('profile'),
+  profilePhotoUploadController
+);
 
 // DELETE INDIVIDUAL PROFILE
 // DELETE/api/V1/users/:id
-userRouter.delete('/profile-photo-upload', deleteProfileController);
+userRouter.delete('/:id', deleteProfileController);
 
 module.exports = userRouter;
