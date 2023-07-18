@@ -121,6 +121,19 @@ const updateProfileController = async (req, res) => {
   }
 };
 
+// profile photo upload
+const profilePhotoUpload = async (req, res) => {
+  console.log(req.file);
+  try {
+    res.json({
+      status: 'success',
+      data: 'profile photo upload',
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 // DELETE INDIVIDUAL PROFILE
 const deleteProfileController = async (req, res) => {
   try {
@@ -138,5 +151,6 @@ module.exports = {
   userIndividualProfileController,
   allUsersProfileController,
   updateProfileController,
+  profilePhotoUpload,
   deleteProfileController,
 };
