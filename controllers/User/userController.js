@@ -1,32 +1,16 @@
 const bcrypt = require('bcryptjs');
 const User = require('../../model/User/User');
+const appError = require('../../utils/appError');
 const generateToken = require('../../utils/generateToken');
 const getTokenFromHeader = require('../../utils/getTokenFromHeader');
 //REGISTER USER
-const userRegisterController = async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    profilePicture,
-    email,
-    password,
-    // postCount,
-    // isBlocked,
-    // isAdmin,
-    // roles,
-    // viewdBy,
-    // followers,
-    // following,
-    // posts,
-    // active,
-  } = req.body;
+const userRegisterController = async (req, res, next) => {
+  const { firstName, lastName, profilePicture, email, password } = req.body;
   try {
     // if email exist
     const userFound = await User.findOne({ email });
     if (userFound) {
-      return res.json({
-        msg: 'user already exist',
-      });
+      return next(appError('user already exist', 500));
     }
     // hash password
 
@@ -45,7 +29,7 @@ const userRegisterController = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    res.json(error.message);
+    next(appError(error.message));
   }
 };
 

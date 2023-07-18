@@ -3,6 +3,7 @@ const postRouter = require('./route/post/postRoutes.js');
 const userRouter = require('./route/user/userRoutes.js');
 const commentsRouter = require('./route/comments/commentsRoutes.js');
 const categoriesRouter = require('./route/categories/categoriesRoutes.js');
+const globalErrorHandler = require('./middlewares/globalErrorHandler.js');
 require('dotenv').config();
 // postRouter
 // userRouter
@@ -32,6 +33,16 @@ app.use('/api/v1/comments', commentsRouter);
 app.use('/api/v1/categories', categoriesRouter);
 
 // error handlers midddlewares
+app.use(globalErrorHandler);
+
+// 404 Error
+app.use('*', (req, res) => {
+  console.log(req.originalUrl);
+  res.status(404).json({
+    message: `${req.originalUrl} -  route not found`,
+  });
+});
+
 // listen to servers
 const PORT = process.env.PORT || 9000;
 
