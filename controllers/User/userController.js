@@ -91,7 +91,7 @@ const whoViewedMyProfileController = async (req, res, next) => {
     const user = await User.findById(req.params.id);
 
     // find the user who is viewing the profile
-    const userWhoViewed = await User.findById(req.Auth);
+    const userWhoViewed = await User.findById(req.userAuth);
 
     // check if original user who viwed are found
     if (user && userWhoViewed) {

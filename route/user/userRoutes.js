@@ -30,7 +30,7 @@ userRouter.get('/profile/', isLoggedIn, userIndividualProfileController);
 
 // WHO VIWED MY PROFILE
 // GET/api/V1/profile-viewer/:id
-userRouter.get('/profile-viewer/:id', whoViewedMyProfileController);
+userRouter.get('/profile-viewer/:id', isLoggedIn, whoViewedMyProfileController);
 
 // FETCH ALL USERS
 // GET/api/V1/allUsers
