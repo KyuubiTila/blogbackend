@@ -8,6 +8,7 @@ const {
   updateProfileController,
   deleteProfileController,
   profilePhotoUploadController,
+  whoViewedMyProfileController,
 } = require('../../controllers/User/userController.js');
 const isLoggedIn = require('../../middlewares/isLoggedin.js');
 const multer = require('multer');
@@ -26,6 +27,10 @@ userRouter.post('/login', userLoginController);
 // VIEW INDIVIDUAL PROFILE
 // GET/api/V1/profile/
 userRouter.get('/profile/', isLoggedIn, userIndividualProfileController);
+
+// WHO VIWED MY PROFILE
+// GET/api/V1/profile-viewer/:id
+userRouter.get('/profile-viewer/:id', whoViewedMyProfileController);
 
 // FETCH ALL USERS
 // GET/api/V1/allUsers
