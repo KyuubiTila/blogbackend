@@ -9,6 +9,7 @@ const {
   deleteProfileController,
   profilePhotoUploadController,
   whoViewedMyProfileController,
+  followingController,
 } = require('../../controllers/User/userController.js');
 const isLoggedIn = require('../../middlewares/isLoggedin.js');
 const multer = require('multer');
@@ -39,6 +40,10 @@ userRouter.get('/allUsers', allUsersProfileController);
 // UPDATE INDIVIDUAL PROFILE
 // PUT/api/V1/users/:id
 userRouter.put('/:id', updateProfileController);
+
+// FOLLOWING USERS
+// GET/api/V1/users/following/:id
+userRouter.get('/following/:id', isLoggedIn, followingController);
 
 // UPLOAD PROFILE PHOTO
 // POST/api/V1/users/profile-photo-upload

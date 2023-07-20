@@ -142,6 +142,43 @@ const allUsersProfileController = async (req, res) => {
   }
 };
 
+// FOLLOWING
+const followingController = async (req, res, next) => {
+  try {
+    // find the user to follow
+    const userToFollow = await User.findById(req.params.id);
+    // find user who is following
+    const userWhoFollowed = await User.findById(req.userAuth);
+
+    // check if user and user who followed are found
+    if (userToFollow && userWhoFollowed) {
+      // check if userWhoFollowed is user already in the user followers array
+      const isUserAlreadyFollowed = userToFollow.following.find(
+        (follower) => follower.toString() === userWhoFollowed._id.toString()
+      );
+      if (isUserAlreadyFollowed) {
+        return next(appError('you already follow this user'));
+      } else {
+        // push user who followed to the user followers array
+        userToFollow.followers.push(userWhoFollowed._id);
+        // push user to follow to user following array
+        userWhoFollowed.following.push(userToFollow._id);
+        // save
+        await userWhoFollowed.save();
+        await userToFollow.save();
+
+        // send response back to the user
+        res.json({
+          status: 'success',
+          data: 'you have succesfully followed this user',
+        });
+      }
+    }
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 // UPDATE INDIVIDUAL PROFILE
 const updateProfileController = async (req, res) => {
   try {
@@ -213,4 +250,5 @@ module.exports = {
   profilePhotoUploadController,
   deleteProfileController,
   whoViewedMyProfileController,
+  followingController,
 };
