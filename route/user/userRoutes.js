@@ -12,6 +12,7 @@ const {
   followingController,
   unfollowController,
   blockUserController,
+  unblockUserController,
 } = require('../../controllers/User/userController.js');
 const isLoggedIn = require('../../middlewares/isLoggedin.js');
 const multer = require('multer');
@@ -54,6 +55,10 @@ userRouter.get('/unfollow/:id', isLoggedIn, unfollowController);
 // BLOCK USERS
 // GET/api/V1/users/block/:id
 userRouter.get('/block/:id', isLoggedIn, blockUserController);
+
+// UNBLOCK USERS
+// GET/api/V1/users/unblock/:id
+userRouter.get('/unblock/:id', isLoggedIn, unblockUserController);
 
 // UPLOAD PROFILE PHOTO
 // POST/api/V1/users/profile-photo-upload

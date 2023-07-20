@@ -255,6 +255,40 @@ const blockUserController = async (req, res, next) => {
   }
 };
 
+// UNBLOCK USER
+const unblockUserController = async (req, res, next) => {
+  try {
+    // 1. CHECK IF USER TO BE UNBLOCKED EXISTS
+    const userToBeUnBlocked = await User.findById(req.params.id);
+
+    // 2. CHECK IF USER WHO IS BLOCKING IS ALREADY LOGGEDIN
+    const userWhoIsUnBlocking = await User.findById(req.userAuth);
+
+    // 3. CHECK IF userToBeUnBlocked AND userWhoIsUnBlocking ARE VALID
+    if (userToBeUnBlocked && userWhoIsUnBlocking) {
+      // 4. CHECK IF userWhoIsUnBlocking HAS THE userToBeUnBlocked IN HIS BLOCKED ARRAY
+      const isUserAlreadyBlocked = userWhoIsUnBlocking.blocked.find(
+        (blocked) => blocked.toString() === userToBeUnBlocked._id.toString()
+      );
+      if (!isUserAlreadyBlocked) {
+        return next(appError('You have not blocked this user'));
+      }
+      // 5. REMOVE userToBeUnBlocked FROM userWhoIsUnBlocking BLOCKED ARRAY
+      userWhoIsUnBlocking.blocked = userWhoIsUnBlocking.blocked.filter(
+        (blocked) => blocked.toString() !== userToBeUnBlocked._id.toString()
+      );
+      //6. RE-SAVE SAVE THE ARRAY OF userWhoIsUnBlocking AGAIN
+      await userWhoIsUnBlocking.save();
+      res.json({
+        status: 'success',
+        data: 'You have succesfully unblocked this user',
+      });
+    }
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 // UPDATE INDIVIDUAL PROFILE
 const updateProfileController = async (req, res) => {
   try {
@@ -329,4 +363,5 @@ module.exports = {
   followingController,
   unfollowController,
   blockUserController,
+  unblockUserController,
 };
