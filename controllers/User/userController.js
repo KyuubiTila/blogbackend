@@ -289,6 +289,31 @@ const unblockUserController = async (req, res, next) => {
   }
 };
 
+// ADMIN BLOCK
+const adminBlockUserController = async (req, res) => {
+  try {
+    //1. FIND USER TO BE BLOCKED BY ADMIN
+    const userToBeBlckedByAdmin = await User.findById(req.params.id);
+
+    //2. CHECK IF USER IS FOUND
+    if (!userToBeBlckedByAdmin) {
+      return next(appError('User has not found'));
+    }
+    //3. CHANGE THE ISBLOCKED FIELD TO TRUE
+    userToBeBlckedByAdmin.isBlocked = true;
+
+    // 4. save the new state of ususerToBeBlckedByAdminer
+    await userToBeBlckedByAdmin.save();
+
+    res.json({
+      status: 'success',
+      data: 'admin has blocked thus user successfully',
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 // UPDATE INDIVIDUAL PROFILE
 const updateProfileController = async (req, res) => {
   try {
@@ -364,4 +389,5 @@ module.exports = {
   unfollowController,
   blockUserController,
   unblockUserController,
+  adminBlockUserController,
 };
