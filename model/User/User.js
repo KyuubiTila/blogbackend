@@ -114,6 +114,11 @@ userSchema.virtual('fullname').get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
+// GET INITIALS
+userSchema.virtual('initials').get(function () {
+  return `${this.firstName[0].toUpperCase()}${this.lastName[0].toUpperCase()}`;
+});
+
 //Compile the User model
 
 const User = mongoose.model('User', userSchema);
