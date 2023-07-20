@@ -220,6 +220,37 @@ const unfollowController = async (req, res, next) => {
       }
     }
   } catch (error) {
+    res.json(`Error: ${error.message}`);
+  }
+};
+
+// BLOCK USER
+const blockUserController = async (req, res, next) => {
+  try {
+    //1 FIND USER TO BE BLOCKED
+    const userToBeBlocked = await User.findById(req.params.id);
+    // 2 FIND USER WHO IS BLOCKING THE OTHER PERSON FROM DB
+    const userWhoIsBlocking = await User.findById(req.userAuth);
+
+    // check if user to be blocked and user who blocked are found in db
+    if (userToBeBlocked && userWhoIsBlocking) {
+      // 3. CHECK IF userWhoIsBlocking ALREADY HAS THE userToBeBlocked IN ITS BLOCKED ARRAY
+      const isUserAlreadyBlocked = userWhoIsBlocking.blocked.find(
+        (blocked) => blocked.toString() === userToBeBlocked._id.toString()
+      );
+      if (isUserAlreadyBlocked) {
+        return next(appError('You already blocked this user'));
+      }
+      // 4 PUSH userToBeBlocked INTO THE ARRAY OF BLOCKED OF THE userWhoIsBlocking
+      userWhoIsBlocking.blocked.push(userToBeBlocked._id);
+      // 5 SAVE ARRAY OF userWhoIsBlocking
+      userWhoIsBlocking.save();
+      res.json({
+        status: 'success',
+        data: 'You have succesfully blocked this user',
+      });
+    }
+  } catch (error) {
     res.json(error.message);
   }
 };
@@ -297,4 +328,5 @@ module.exports = {
   whoViewedMyProfileController,
   followingController,
   unfollowController,
+  blockUserController,
 };
