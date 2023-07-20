@@ -19,7 +19,7 @@ console.log(app);
 // ----------
 app.use(express.json());
 
-app.use(isAdmin);
+// app.use(isAdmin);
 // ---------routes---------
 
 // --------Users Route

@@ -105,8 +105,14 @@ const userSchema = new mongoose.Schema(
 
   {
     timestamps: true,
+    toJSON: { virtuals: true },
   }
 );
+
+// GET FULLNAME
+userSchema.virtual('fullname').get(function () {
+  return `${this.firstName} ${this.lastName}`;
+});
 
 //Compile the User model
 
