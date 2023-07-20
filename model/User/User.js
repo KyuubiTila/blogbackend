@@ -119,6 +119,11 @@ userSchema.virtual('initials').get(function () {
   return `${this.firstName[0].toUpperCase()}${this.lastName[0].toUpperCase()}`;
 });
 
+// GET POST COUNT
+userSchema.virtual('postCounts').get(function () {
+  return this.posts.length;
+});
+
 //Compile the User model
 
 const User = mongoose.model('User', userSchema);
