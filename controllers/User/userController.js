@@ -179,6 +179,51 @@ const followingController = async (req, res, next) => {
   }
 };
 
+// UNFOLLOW
+const unfollowController = async (req, res, next) => {
+  try {
+    //1 find the user to unfollow
+    const userToBeUnfollowed = await User.findById(req.params.id);
+
+    //2 check is user who is unfllowing i.e loggedin
+    const userWhoUnfollowed = await User.findById(req.userAuth);
+
+    //3 check if user who is to be unfllowed and user who is logged in are in order
+    if (userToBeUnfollowed && userWhoUnfollowed) {
+      //4 check if user userWhoUnfollowed is already in the user followers array
+
+      const isUserAlreadyFollowed = userToBeUnfollowed.followers.find(
+        (follower) => follower.toString() === userWhoUnfollowed._id.toString()
+      );
+      if (!isUserAlreadyFollowed) {
+        return next(appError('you do not follow this user'));
+      } else {
+        //5 remove user who was unfollowed from userfollowing array
+        userToBeUnfollowed.followers = userToBeUnfollowed.followers.filter(
+          (follower) => follower.toString() !== userWhoUnfollowed._id.toString()
+        );
+
+        //6 save the user
+        await userToBeUnfollowed.save();
+
+        //7 remove userToBeUnfollowed from userWhoUnfollowed following user array
+        userWhoUnfollowed.following = userWhoUnfollowed.following.filter(
+          (following) =>
+            following.toString() !== userToBeUnfollowed._id.toString()
+        );
+        //8 save the user
+        await userWhoUnfollowed.save();
+        res.json({
+          status: 'success',
+          data: 'You have successfully unfollowed this user',
+        });
+      }
+    }
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 // UPDATE INDIVIDUAL PROFILE
 const updateProfileController = async (req, res) => {
   try {
@@ -251,4 +296,5 @@ module.exports = {
   deleteProfileController,
   whoViewedMyProfileController,
   followingController,
+  unfollowController,
 };
