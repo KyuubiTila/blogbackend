@@ -14,6 +14,7 @@ const {
   blockUserController,
   unblockUserController,
   adminBlockUserController,
+  adminUnBlockUserController,
 } = require('../../controllers/User/userController.js');
 const isLoggedIn = require('../../middlewares/isLoggedin.js');
 const multer = require('multer');
@@ -69,6 +70,15 @@ userRouter.put(
   isLoggedIn,
   isAdmin,
   adminBlockUserController
+);
+
+// ADMIN UNBLOCK USERS
+// PUT/api/V1/users/admin-unblock/:id
+userRouter.put(
+  '/admin_unblock/:id',
+  isLoggedIn,
+  isAdmin,
+  adminUnBlockUserController
 );
 
 // UPLOAD PROFILE PHOTO
