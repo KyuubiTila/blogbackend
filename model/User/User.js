@@ -124,6 +124,26 @@ userSchema.virtual('postCounts').get(function () {
   return this.posts.length;
 });
 
+// GET FOLLOWING COUNT
+userSchema.virtual('followingCount').get(function () {
+  return this.following.length;
+});
+
+// GET FOLLOWERS COUNT
+userSchema.virtual('followersCount').get(function () {
+  return this.followers.length;
+});
+
+// GET VIEWERS COUNT
+userSchema.virtual('viewersCount').get(function () {
+  return this.viewers.length;
+});
+
+// GET BLOCKED USERS COUNT
+userSchema.virtual('blockedCount').get(function () {
+  return this.blocked.length;
+});
+
 //Compile the User model
 
 const User = mongoose.model('User', userSchema);
