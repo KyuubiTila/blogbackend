@@ -17,6 +17,7 @@ const {
 } = require('../../controllers/User/userController.js');
 const isLoggedIn = require('../../middlewares/isLoggedin.js');
 const multer = require('multer');
+const isAdmin = require('../../middlewares/isAdmin.js');
 const userRouter = express.Router();
 
 // instace of multer
@@ -63,7 +64,12 @@ userRouter.get('/unblock/:id', isLoggedIn, unblockUserController);
 
 // ADMIN BLOCK USERS
 // PUT/api/V1/users/admin-block/:id
-userRouter.put('/admin_block/:id', isLoggedIn, adminBlockUserController);
+userRouter.put(
+  '/admin_block/:id',
+  isLoggedIn,
+  isAdmin,
+  adminBlockUserController
+);
 
 // UPLOAD PROFILE PHOTO
 // POST/api/V1/users/profile-photo-upload

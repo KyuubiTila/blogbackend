@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../../model/User/User');
 const appError = require('../../utils/appError');
 const generateToken = require('../../utils/generateToken');
-// const getTokenFromHeader = require('../../utils/getTokenFromHeader');
+const getTokenFromHeader = require('../../utils/getTokenFromHeader');
 //REGISTER USER
 const userRegisterController = async (req, res, next) => {
   const { firstName, lastName, profilePicture, email, password } = req.body;
@@ -57,18 +57,6 @@ const userLoginController = async (req, res) => {
       });
     }
 
-    // if (!checkEmail) {
-    //   return res.json({
-    //     msg: 'credentials not found',
-    //   });
-    // }
-    // check validity of password
-    // const checkPassword = await User.findOne({ password });
-    // if (!checkPassword) {
-    //   return res.json({
-    //     msg: 'credentials not found',
-    //   });
-    // }
     res.json({
       status: 'success',
       data: {

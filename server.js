@@ -4,6 +4,7 @@ const userRouter = require('./route/user/userRoutes.js');
 const commentsRouter = require('./route/comments/commentsRoutes.js');
 const categoriesRouter = require('./route/categories/categoriesRoutes.js');
 const globalErrorHandler = require('./middlewares/globalErrorHandler.js');
+const isAdmin = require('./middlewares/isAdmin.js');
 require('dotenv').config();
 // postRouter
 // userRouter
@@ -18,6 +19,7 @@ console.log(app);
 // ----------
 app.use(express.json());
 
+app.use(isAdmin);
 // ---------routes---------
 
 // --------Users Route
