@@ -108,6 +108,21 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// HOOKS
+//PRE before record is saved and its queries are find/findOne
+userSchema.pre(/^find/, function (next) {
+  console.log('pre hook called');
+  next();
+});
+
+// POST after saving
+
+userSchema.post('save', function (next) {
+  console.log('post hook');
+  // next();
+});
+
+// VIRTUAL ATTRIBUTES
 // GET FULLNAME
 userSchema.virtual('fullname').get(function () {
   return `${this.firstName} ${this.lastName}`;
