@@ -87,13 +87,12 @@ const userSchema = new mongoose.Schema(
         ref: 'Post',
       },
     ],
-    plan: [
-      {
-        type: String,
-        enum: ['free', 'premium', 'pro'],
-        default: 'free',
-      },
-    ],
+    // plan: {
+    //   type: String,
+    //   enum: ['free', 'premium', 'pro'],
+    //   default: 'free',
+    // },
+
     userAward: [
       {
         type: String,

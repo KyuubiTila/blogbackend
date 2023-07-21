@@ -4,46 +4,46 @@ const mongoose = require('mongoose');
 const postSchema = new mongoose.Schema(
   {
     title: {
-      type: string,
+      type: String,
       required: [true, 'Post Title is required'],
       trim: true,
     },
 
     description: {
-      type: string,
+      type: String,
       required: [true, 'Post description is required'],
     },
 
     category: {
-      type: mongoose.Schema.Types.objectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
-      required: [true, 'Post category is required'],
+      // required: [true, 'Post category is required'],
     },
 
     numViews: [
       {
-        type: mongoose.Schema.Types.objectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
       },
     ],
 
     likes: [
       {
-        type: mongoose.Schema.Types.objectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
       },
     ],
 
     disLikes: [
       {
-        type: mongoose.Schema.Types.objectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
       },
     ],
 
     user: [
       {
-        type: mongoose.Schema.Types.objectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: [true, 'Please Author is required'],
       },
@@ -51,7 +51,7 @@ const postSchema = new mongoose.Schema(
 
     photo: {
       type: String,
-      required: [true, 'Post image is required'],
+      // required: [true, 'Post image is required'],
     },
   },
 
