@@ -1,6 +1,7 @@
 // const { default: mongoose } = require('mongoose');
 
 const mongoose = require('mongoose');
+const Post = require('../Post/Post');
 
 // create schema
 const userSchema = new mongoose.Schema(
@@ -110,17 +111,36 @@ const userSchema = new mongoose.Schema(
 
 // HOOKS
 //PRE before record is saved and its queries are find/findOne
-userSchema.pre(/^find/, function (next) {
-  console.log('pre hook called');
+userSchema.pre('findOne', async function (next) {
+  // get the user id
+  const userId = this._conditions._id;
+
+  // find the post created by the user
+  const posts = await Post.find({ user: userId });
+
+  // get the last post created by the user
+  const lastPost = posts[posts.length - 1];
+
+  // get the last post date
+  const lastPostDate = new Date(lastPost.createdAt);
+
+  // get the last post date in strig format
+  const lastPostDateString = lastPostDate.toDateString();
+
+  // add the last post date as a virtual to the schema
+  userSchema.virtual('lastPostDate').get(function () {
+    return lastPostDateString;
+  });
+  // console.log(lastPost);
   next();
 });
 
-// POST after saving
+// // POST after saving
 
-userSchema.post('save', function (next) {
-  console.log('post hook');
-  // next();
-});
+// userSchema.post('save', function (next) {
+//   console.log('post hook');
+//   // next();
+// });
 
 // VIRTUAL ATTRIBUTES
 // GET FULLNAME
