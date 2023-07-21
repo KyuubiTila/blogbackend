@@ -141,7 +141,7 @@ userSchema.pre('findOne', async function (next) {
   // convert to differnces in days
   const differenceInDAys = dirrenceInDates / (1000 * 3600 * 24);
 
-  // compare to 30 days
+  // compare to 30 days and block
   if (30 > differenceInDAys) {
     // push a virtual property by mongoose about being Inactive
     userSchema.virtual('isInActive').get(function () {
@@ -174,7 +174,21 @@ userSchema.pre('findOne', async function (next) {
     );
   }
 
-  // -------------- BLOCKING OF USER IF INCATIVE FOR 30 DAYS ---------------
+  // get last active day in real time days
+  const realDays = Math.floor(differenceInDAys);
+
+  1 > realDays
+    ? userSchema.virtual('lastSeen').get(function () {
+        return `${realDays} days ago`;
+      })
+    : userSchema.virtual('lastSeen').get(function () {
+        return `${realDays} day ago`;
+      });
+
+  // create a vitual property to know when last a user was active
+
+  console.log(realDays);
+
   next();
 });
 
