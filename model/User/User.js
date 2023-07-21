@@ -140,18 +140,41 @@ userSchema.pre('findOne', async function (next) {
 
   // convert to differnces in days
   const differenceInDAys = dirrenceInDates / (1000 * 3600 * 24);
-  // console.log(differenceInDAys);
 
   // compare to 30 days
   if (30 > differenceInDAys) {
+    // push a virtual property by mongoose about being Inactive
     userSchema.virtual('isInActive').get(function () {
       return false;
     });
+    // find the user by Id and update
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        isBlocked: false,
+      },
+      {
+        new: true,
+      }
+    );
   } else {
+    // push a virtual property by mongoose about being Inactive
     userSchema.virtual('isInActive').get(function () {
       return true;
     });
+    // find the user by Id and update
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        isBlocked: true,
+      },
+      {
+        new: true,
+      }
+    );
   }
+
+  // -------------- BLOCKING OF USER IF INCATIVE FOR 30 DAYS ---------------
   next();
 });
 
