@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const { findByIdAndUpdate } = require('../../model/User/User');
 const User = require('../../model/User/User');
 const appError = require('../../utils/appError');
 const generateToken = require('../../utils/generateToken');
@@ -328,8 +329,8 @@ const adminUnBlockUserController = async (req, res, next) => {
   }
 };
 
-// UPDATE INDIVIDUAL PASSWORD
-const passwordUpdateController = async (req, res, next) => {
+// UPDATE INDIVIDUAL PROFILE
+const detailsUpdateController = async (req, res, next) => {
   const { email, firstName, lastName } = req.body;
   try {
     // check if email is not taken
@@ -358,6 +359,37 @@ const passwordUpdateController = async (req, res, next) => {
       status: 'success',
       data: updateUser,
     });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+// UPDATE INDIVIDUAL PASSWORD
+const passwordUpdateController = async (req, res) => {
+  const { password } = req.body;
+  try {
+    // find if password field is available
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassowrd = await bcrypt.hash(password, salt);
+      // update User
+      await User.findByIdAndUpdate(
+        req.userAuth,
+        {
+          password: hashedPassowrd,
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+      res.json({
+        status: 'success',
+        data: 'password upated succesfully',
+      });
+    } else {
+      return next(appError('please provide password field'));
+    }
   } catch (error) {
     res.json(error.message);
   }
@@ -440,5 +472,6 @@ module.exports = {
   unblockUserController,
   adminBlockUserController,
   adminUnBlockUserController,
+  detailsUpdateController,
   passwordUpdateController,
 };

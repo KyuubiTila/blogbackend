@@ -5,7 +5,7 @@ const {
   userLoginController,
   userIndividualProfileController,
   allUsersProfileController,
-  updateProfileController,
+  // updateProfileController,
   deleteProfileController,
   profilePhotoUploadController,
   whoViewedMyProfileController,
@@ -15,6 +15,7 @@ const {
   unblockUserController,
   adminBlockUserController,
   adminUnBlockUserController,
+  detailsUpdateController,
   passwordUpdateController,
 } = require('../../controllers/User/userController.js');
 const isLoggedIn = require('../../middlewares/isLoggedin.js');
@@ -46,7 +47,11 @@ userRouter.get('/allUsers', allUsersProfileController);
 
 // UPDATE INDIVIDUAL PROFILE
 // PUT/api/V1/users/:id
-userRouter.put('/', isLoggedIn, passwordUpdateController);
+userRouter.put('/', isLoggedIn, detailsUpdateController);
+
+// UPDATE INDIVIDUAL PASSWORD
+// PUT/api/V1/users/:id
+userRouter.put('/update-password', isLoggedIn, passwordUpdateController);
 
 // FOLLOWING USERS
 // GET/api/V1/users/following/:id
