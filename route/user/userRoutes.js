@@ -15,6 +15,7 @@ const {
   unblockUserController,
   adminBlockUserController,
   adminUnBlockUserController,
+  passwordUpdateController,
 } = require('../../controllers/User/userController.js');
 const isLoggedIn = require('../../middlewares/isLoggedin.js');
 const multer = require('multer');
@@ -45,7 +46,7 @@ userRouter.get('/allUsers', allUsersProfileController);
 
 // UPDATE INDIVIDUAL PROFILE
 // PUT/api/V1/users/:id
-userRouter.put('/:id', updateProfileController);
+userRouter.put('/', isLoggedIn, passwordUpdateController);
 
 // FOLLOWING USERS
 // GET/api/V1/users/following/:id

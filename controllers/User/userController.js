@@ -304,7 +304,7 @@ const adminBlockUserController = async (req, res) => {
 };
 
 // ADMIN UNBLOCK
-const adminUnBlockUserController = async (req, res) => {
+const adminUnBlockUserController = async (req, res, next) => {
   try {
     //1. FIND USER TO BE UNBLOCKED BY ADMIN
     const userToUnBeBlckedByAdmin = await User.findById(req.params.id);
@@ -322,6 +322,41 @@ const adminUnBlockUserController = async (req, res) => {
     res.json({
       status: 'success',
       data: 'admin has unblocked this user successfully',
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+// UPDATE INDIVIDUAL PASSWORD
+const passwordUpdateController = async (req, res, next) => {
+  const { email, firstName, lastName } = req.body;
+  try {
+    // check if email is not taken
+    if (email) {
+      const userTaken = await User.findOne({ email });
+      if (userTaken) {
+        return next(appError('Email is taken', 400));
+      }
+    }
+
+    // UPDATE USER
+    const updateUser = await User.findByIdAndUpdate(
+      req.userAuth,
+      {
+        lastName,
+        firstName,
+        email,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    // SEND RESPONSE
+    res.json({
+      status: 'success',
+      data: updateUser,
     });
   } catch (error) {
     res.json(error.message);
@@ -405,4 +440,5 @@ module.exports = {
   unblockUserController,
   adminBlockUserController,
   adminUnBlockUserController,
+  passwordUpdateController,
 };
