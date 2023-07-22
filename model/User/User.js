@@ -177,6 +177,7 @@ userSchema.pre('findOne', async function (next) {
   // get last active day in real time days
   const realDays = Math.floor(differenceInDAys);
 
+  // create a vitual property to know when last a user was active
   1 > realDays
     ? userSchema.virtual('lastSeen').get(function () {
         return `${realDays} days ago`;
@@ -185,9 +186,40 @@ userSchema.pre('findOne', async function (next) {
         return `${realDays} day ago`;
       });
 
-  // create a vitual property to know when last a user was active
+  // UPDATING THE AWARD OF A USER BASED ON THE NUMBERS OF POSTS CREATED
+  const lengthOfPost = posts.length;
 
-  console.log(realDays);
+  if (lengthOfPost < 10) {
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        userAward: 'bronze',
+      },
+      {
+        new: true,
+      }
+    );
+  } else if (lengthOfPost > 10) {
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        userAward: 'silver',
+      },
+      {
+        new: true,
+      }
+    );
+  } else if (lengthOfPost > 20) {
+    await User.findByIdAndUpdate(
+      userId,
+      {
+        userAward: 'gold',
+      },
+      {
+        new: true,
+      }
+    );
+  }
 
   next();
 });
