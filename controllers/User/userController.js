@@ -39,15 +39,13 @@ const userRegisterController = async (req, res, next) => {
 };
 
 // LOGIN USER
-const userLoginController = async (req, res) => {
+const userLoginController = async (req, res, next) => {
   const { email, password } = req.body;
   try {
     // check if email exists
     const checkEmail = await User.findOne({ email });
     if (!checkEmail) {
-      return res.json({
-        msg: 'invalid login credentials',
-      });
+      return next(appError('Invalid login credentials'));
     }
 
     // verify password match
@@ -57,9 +55,7 @@ const userLoginController = async (req, res) => {
     );
 
     if (!isPasswordMatched) {
-      return res.json({
-        msg: 'invalid login credentials',
-      });
+      return next(appError('Invalid login credentials'));
     }
 
     res.json({
@@ -73,7 +69,7 @@ const userLoginController = async (req, res) => {
       },
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
@@ -111,7 +107,7 @@ const whoViewedMyProfileController = async (req, res, next) => {
 };
 
 // VIEW INDIVIDUAL PROFILE
-const userIndividualProfileController = async (req, res) => {
+const userIndividualProfileController = async (req, res, next) => {
   try {
     const user = await User.findById(req.userAuth);
     res.json({
@@ -119,12 +115,12 @@ const userIndividualProfileController = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
 // FETCH ALL USERS
-const allUsersProfileController = async (req, res) => {
+const allUsersProfileController = async (req, res, next) => {
   try {
     const users = await User.find();
     res.json({
@@ -132,7 +128,7 @@ const allUsersProfileController = async (req, res) => {
       data: users,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
@@ -169,7 +165,7 @@ const followingController = async (req, res, next) => {
       }
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
@@ -214,7 +210,7 @@ const unfollowController = async (req, res, next) => {
       }
     }
   } catch (error) {
-    res.json(`Error: ${error.message}`);
+    return next(appError(error.message));
   }
 };
 
@@ -245,7 +241,7 @@ const blockUserController = async (req, res, next) => {
       });
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
@@ -279,12 +275,12 @@ const unblockUserController = async (req, res, next) => {
       });
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
 // ADMIN BLOCK
-const adminBlockUserController = async (req, res) => {
+const adminBlockUserController = async (req, res, next) => {
   try {
     //1. FIND USER TO BE BLOCKED BY ADMIN
     const userToBeBlckedByAdmin = await User.findById(req.params.id);
@@ -304,7 +300,7 @@ const adminBlockUserController = async (req, res) => {
       data: 'admin has blocked thus user successfully',
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
@@ -329,7 +325,7 @@ const adminUnBlockUserController = async (req, res, next) => {
       data: 'admin has unblocked this user successfully',
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
@@ -364,12 +360,12 @@ const detailsUpdateController = async (req, res, next) => {
       data: updateUser,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
 // UPDATE INDIVIDUAL PASSWORD
-const passwordUpdateController = async (req, res) => {
+const passwordUpdateController = async (req, res, next) => {
   const { password } = req.body;
   try {
     // find if password field is available
@@ -395,12 +391,12 @@ const passwordUpdateController = async (req, res) => {
       return next(appError('please provide password field'));
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
 // DELETE INDIVIDUAL ACCOUNT
-const deleteAccountController = async (req, res) => {
+const deleteAccountController = async (req, res, next) => {
   try {
     // find the user to be deleted
     const userTodelete = await User.findById(req.userAuth);
@@ -423,19 +419,19 @@ const deleteAccountController = async (req, res) => {
       data: 'account deleted successfully',
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
 // UPDATE INDIVIDUAL PROFILE
-const updateProfileController = async (req, res) => {
+const updateProfileController = async (req, res, next) => {
   try {
     res.json({
       status: 'success',
       data: 'update user route',
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 

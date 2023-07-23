@@ -1,8 +1,9 @@
 const Post = require('../../model/Post/Post');
 const User = require('../../model/User/User');
+const appError = require('../../utils/appError');
 
 // CREATE INDIVIDUAL POST
-const createIndividualPost = async (req, res) => {
+const createIndividualPost = async (req, res, next) => {
   try {
     //destructure the element requird for the post creation from the request body
     const { title, description } = req.body;
@@ -27,7 +28,7 @@ const createIndividualPost = async (req, res) => {
       data: postCreated,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
