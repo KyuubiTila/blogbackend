@@ -23,7 +23,7 @@ categoriesRouter.get('/:id', isLoggedIn, fetchIndividualCategoryController);
 
 // DELETE INDIVIDUAL CATEGORY
 // DELETE/api/V1/categories/:id
-categoriesRouter.delete('/:id', deleteIndividualCategoryController);
+categoriesRouter.delete('/:id', isLoggedIn, deleteIndividualCategoryController);
 
 // UPDATE CATEGORY
 // PUT/api/V1/categories/:id

@@ -46,14 +46,16 @@ const fetchIndividualCategoryController = async (req, res, next) => {
 };
 
 // DELETE INDIVIDUAL CATEGORY
-const deleteIndividualCategoryController = async (req, res) => {
+const deleteIndividualCategoryController = async (req, res, next) => {
   try {
+    await Category.findByIdAndDelete(req.params.id);
+
     res.json({
       status: 'success',
-      data: 'delete category route',
+      data: 'category has been deleted',
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
