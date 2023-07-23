@@ -17,6 +17,20 @@ const createCategoryController = async (req, res, next) => {
   }
 };
 
+// GET ALL CATEGORY
+const fetchAllCategoriesController = async (req, res) => {
+  try {
+    const categories = await Category.find();
+
+    res.json({
+      status: 'success',
+      data: categories,
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 // GET INDIVIDUAL CATEGORY
 const fetchIndividualCategoryController = async (req, res) => {
   try {
@@ -57,4 +71,5 @@ module.exports = {
   fetchIndividualCategoryController,
   deleteIndividualCategoryController,
   updateIndividualCategoryController,
+  fetchAllCategoriesController,
 };
