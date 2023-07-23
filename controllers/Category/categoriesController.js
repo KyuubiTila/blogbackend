@@ -18,7 +18,7 @@ const createCategoryController = async (req, res, next) => {
 };
 
 // GET ALL CATEGORY
-const fetchAllCategoriesController = async (req, res) => {
+const fetchAllCategoriesController = async (req, res, next) => {
   try {
     const categories = await Category.find();
 
@@ -27,12 +27,12 @@ const fetchAllCategoriesController = async (req, res) => {
       data: categories,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
 // GET INDIVIDUAL CATEGORY
-const fetchIndividualCategoryController = async (req, res) => {
+const fetchIndividualCategoryController = async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.id);
 
@@ -41,7 +41,7 @@ const fetchIndividualCategoryController = async (req, res) => {
       data: category,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
@@ -58,14 +58,25 @@ const deleteIndividualCategoryController = async (req, res) => {
 };
 
 // UPDATE INDIVIDUAL CATEGORY
-const updateIndividualCategoryController = async (req, res) => {
+const updateIndividualCategoryController = async (req, res, next) => {
+  const { title } = req.body;
   try {
+    const updateCategory = await Category.findByIdAndUpdate(
+      req.params.id,
+      {
+        title,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     res.json({
       status: 'success',
-      data: 'update category route',
+      data: updateCategory,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 module.exports = {

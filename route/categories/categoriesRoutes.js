@@ -27,6 +27,6 @@ categoriesRouter.delete('/:id', deleteIndividualCategoryController);
 
 // UPDATE CATEGORY
 // PUT/api/V1/categories/:id
-categoriesRouter.put('/:id', updateIndividualCategoryController);
+categoriesRouter.put('/:id', isLoggedIn, updateIndividualCategoryController);
 
 module.exports = categoriesRouter;
