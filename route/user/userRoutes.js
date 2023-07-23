@@ -6,7 +6,7 @@ const {
   userIndividualProfileController,
   allUsersProfileController,
   // updateProfileController,
-  deleteProfileController,
+  // deleteProfileController,
   profilePhotoUploadController,
   whoViewedMyProfileController,
   followingController,
@@ -17,6 +17,7 @@ const {
   adminUnBlockUserController,
   detailsUpdateController,
   passwordUpdateController,
+  deleteAccountController,
 } = require('../../controllers/User/userController.js');
 const isLoggedIn = require('../../middlewares/isLoggedin.js');
 const multer = require('multer');
@@ -52,6 +53,10 @@ userRouter.put('/', isLoggedIn, detailsUpdateController);
 // UPDATE INDIVIDUAL PASSWORD
 // PUT/api/V1/users/:id
 userRouter.put('/update-password', isLoggedIn, passwordUpdateController);
+
+// DELETE INDIVIDUAL ACCOUNT
+// DELETE/api/V1/users/:id
+userRouter.delete('/delete-account', isLoggedIn, deleteAccountController);
 
 // FOLLOWING USERS
 // GET/api/V1/users/following/:id
@@ -96,8 +101,8 @@ userRouter.post(
   profilePhotoUploadController
 );
 
-// DELETE INDIVIDUAL PROFILE
-// DELETE/api/V1/users/:id
-userRouter.delete('/:id', deleteProfileController);
+// // DELETE INDIVIDUAL PROFILE
+// // DELETE/api/V1/users/:id
+// userRouter.delete('/:id', deleteProfileController);
 
 module.exports = userRouter;

@@ -1,9 +1,13 @@
 const bcrypt = require('bcryptjs');
+const Category = require('../../model/Categories/Category');
+const Comment = require('../../model/Comment/Comment');
+const Post = require('../../model/Post/Post');
 const { findByIdAndUpdate } = require('../../model/User/User');
 const User = require('../../model/User/User');
 const appError = require('../../utils/appError');
 const generateToken = require('../../utils/generateToken');
 const getTokenFromHeader = require('../../utils/getTokenFromHeader');
+
 //REGISTER USER
 const userRegisterController = async (req, res, next) => {
   const { firstName, lastName, profilePicture, email, password } = req.body;
@@ -371,7 +375,7 @@ const passwordUpdateController = async (req, res) => {
     // find if password field is available
     if (password) {
       const salt = await bcrypt.genSalt(10);
-      const hashedPassowrd = await bcrypt.hash(password, salt);
+      const hashedPassowrd = await bcrypt.hash(password, salt, next);
       // update User
       await User.findByIdAndUpdate(
         req.userAuth,
@@ -390,6 +394,34 @@ const passwordUpdateController = async (req, res) => {
     } else {
       return next(appError('please provide password field'));
     }
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+// DELETE INDIVIDUAL ACCOUNT
+const deleteAccountController = async (req, res) => {
+  try {
+    // find the user to be deleted
+    const userTodelete = await User.findById(req.userAuth);
+
+    // find all posts to be deleted
+    await Post.deleteMany({ user: req.userAuth });
+
+    // find all comments to be deleted
+    await Comment.deleteMany({ user: req.userAuth });
+
+    // find all categories to be deleted
+    await Category.deleteMany({ user: req.userAuth });
+
+    //delete user account
+    await userTodelete.deleteOne();
+    console.log(userTodelete);
+
+    return res.json({
+      status: 'success',
+      data: 'account deleted successfully',
+    });
   } catch (error) {
     res.json(error.message);
   }
@@ -446,17 +478,17 @@ const profilePhotoUploadController = async (req, res, next) => {
   }
 };
 
-// DELETE INDIVIDUAL PROFILE
-const deleteProfileController = async (req, res) => {
-  try {
-    res.json({
-      status: 'success',
-      data: 'delete user route',
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-};
+// // DELETE INDIVIDUAL PROFILE
+// const deleteProfileController = async (req, res) => {
+//   try {
+//     res.json({
+//       status: 'success',
+//       data: 'delete user route',
+//     });
+//   } catch (error) {
+//     res.json(error.message);
+//   }
+// };
 module.exports = {
   userRegisterController,
   userLoginController,
@@ -464,7 +496,7 @@ module.exports = {
   allUsersProfileController,
   updateProfileController,
   profilePhotoUploadController,
-  deleteProfileController,
+  // deleteProfileController,
   whoViewedMyProfileController,
   followingController,
   unfollowController,
@@ -474,4 +506,5 @@ module.exports = {
   adminUnBlockUserController,
   detailsUpdateController,
   passwordUpdateController,
+  deleteAccountController,
 };
