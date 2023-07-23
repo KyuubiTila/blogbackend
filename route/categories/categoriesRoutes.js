@@ -5,11 +5,12 @@ const {
   deleteIndividualCategoryController,
   updateIndividualCategoryController,
 } = require('../../controllers/Category/categoriesController');
+const isLoggedIn = require('../../middlewares/isLoggedIn');
 const categoriesRouter = express.Router();
 
 // CREATE CATEGORY
 // POST/api/V1/categories
-categoriesRouter.post('/', createCategoryController);
+categoriesRouter.post('/', isLoggedIn, createCategoryController);
 
 // GET INDIVIDUAL CATEGORY
 // GET/api/V1/categories/:id
