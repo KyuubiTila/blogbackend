@@ -34,9 +34,11 @@ const fetchAllCategoriesController = async (req, res) => {
 // GET INDIVIDUAL CATEGORY
 const fetchIndividualCategoryController = async (req, res) => {
   try {
+    const category = await Category.findById(req.params.id);
+
     res.json({
       status: 'success',
-      data: 'individual category route',
+      data: category,
     });
   } catch (error) {
     res.json(error.message);

@@ -19,7 +19,7 @@ categoriesRouter.get('/', isLoggedIn, fetchAllCategoriesController);
 
 // GET INDIVIDUAL CATEGORY
 // GET/api/V1/categories/:id
-categoriesRouter.get('/:id', fetchIndividualCategoryController);
+categoriesRouter.get('/:id', isLoggedIn, fetchIndividualCategoryController);
 
 // DELETE INDIVIDUAL CATEGORY
 // DELETE/api/V1/categories/:id
