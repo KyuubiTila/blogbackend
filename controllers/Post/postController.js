@@ -6,16 +6,22 @@ const appError = require('../../utils/appError');
 const createIndividualPost = async (req, res, next) => {
   try {
     //destructure the element requird for the post creation from the request body
-    const { title, description } = req.body;
+    const { title, description, category } = req.body;
 
     //1. Find user who is creating the post
     const author = await User.findById(req.userAuth);
+
+    // check if user is blocked
+    if (author.isBlocked) {
+      return next(appError('Access denied, user  blocked', 403));
+    }
 
     //2. CREATE THE POST
     const postCreated = await Post.create({
       title,
       description,
       user: author._id,
+      category,
     });
 
     //3. PUSH THE POST INTO THE POST BODY
