@@ -273,11 +273,17 @@ const blockUserController = async (req, res, next) => {
   try {
     //1 FIND USER TO BE BLOCKED
     const userToBeBlocked = await User.findById(req.params.id);
+    console.log(userToBeBlocked._id.toString());
     // 2 FIND USER WHO IS BLOCKING THE OTHER PERSON FROM DB
     const userWhoIsBlocking = await User.findById(req.userAuth);
+    console.log(userWhoIsBlocking._id.toString());
 
     // check if user to be blocked and user who blocked are found in db
     if (userToBeBlocked && userWhoIsBlocking) {
+      //CHECK IF USER IS TRYING TO BLOCK HIMSELF
+      if (userWhoIsBlocking._id.toString() === userToBeBlocked._id.toString()) {
+        return next(appError('You can not block yourself'));
+      }
       // 3. CHECK IF userWhoIsBlocking ALREADY HAS THE userToBeBlocked IN ITS BLOCKED ARRAY
       const isUserAlreadyBlocked = userWhoIsBlocking.blocked.find(
         (blocked) => blocked.toString() === userToBeBlocked._id.toString()
