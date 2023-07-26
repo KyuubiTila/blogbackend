@@ -9,7 +9,7 @@ const isLoggedIn = (req, res, next) => {
   //   save the user into the required object
   req.userAuth = decodedUser.id;
   !decodedUser
-    ? next(appError('invalid /expired token, please login again', 500))
+    ? next(appError('invalid or expired token, please login again', 500))
     : next();
 };
 

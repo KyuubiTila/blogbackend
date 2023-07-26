@@ -1,6 +1,7 @@
 // const { default: mongoose } = require('mongoose');
 
 const mongoose = require('mongoose');
+const appError = require('../../utils/appError');
 const Post = require('../Post/Post');
 
 // create schema
@@ -101,6 +102,8 @@ const userSchema = new mongoose.Schema(
         default: 'bronze',
       },
     ],
+
+    loginTimestamp: { type: Date, default: Date.now() },
   },
 
   {
@@ -111,122 +114,17 @@ const userSchema = new mongoose.Schema(
 
 // HOOKS
 //PRE before record is saved and its queries are find/findOne
-userSchema.pre('findOne', async function (next) {
-  //populate the user posts
-  this.populate({
-    path: 'posts',
-  });
-  // get the user id
-  const userId = this._conditions._id;
+// userSchema.pre('findOne', async function (next) {
+//   const queryConditions = this._conditions;
+//   const { email } = queryConditions;
 
-  // find the post created by the user
-  const posts = await Post.find({ user: userId });
+//   try {
 
-  // get the last post created by the user
-  const lastPost = posts[posts.length - 1];
-
-  // get the last post date
-  const lastPostDate = new Date(lastPost?.createdAt);
-
-  // get the last post date in strig format
-  const lastPostDateString = lastPostDate.toDateString();
-
-  // add the last post date as a virtual to the schema
-  userSchema.virtual('lastPostDate').get(function () {
-    return lastPostDateString;
-  });
-
-  // ---------------------check if user is inactive for 30 days -------------------
-  //check for the current date
-  const currentDate = new Date();
-  // check the diference between the last post date and the current date
-  const dirrenceInDates = currentDate - lastPostDate;
-
-  // convert to differnces in days
-  const differenceInDAys = dirrenceInDates / (1000 * 3600 * 24);
-
-  // compare to 30 days and block
-  if (30 > differenceInDAys) {
-    // push a virtual property by mongoose about being Inactive
-    userSchema.virtual('isInActive').get(function () {
-      return false;
-    });
-    // find the user by Id and update
-    await User.findByIdAndUpdate(
-      userId,
-      {
-        isBlocked: false,
-      },
-      {
-        new: true,
-      }
-    );
-  } else {
-    // push a virtual property by mongoose about being Inactive
-    userSchema.virtual('isInActive').get(function () {
-      return true;
-    });
-    // find the user by Id and update
-    await User.findByIdAndUpdate(
-      userId,
-      {
-        isBlocked: true,
-      },
-      {
-        new: true,
-      }
-    );
-  }
-
-  // get last active day in real time days
-  const realDays = Math.floor(differenceInDAys);
-
-  // create a vitual property to know when last a user was active
-  1 > realDays
-    ? userSchema.virtual('lastSeen').get(function () {
-        return `${realDays} days ago`;
-      })
-    : userSchema.virtual('lastSeen').get(function () {
-        return `${realDays} day ago`;
-      });
-
-  // UPDATING THE AWARD OF A USER BASED ON THE NUMBERS OF POSTS CREATED
-  const lengthOfPost = posts.length;
-
-  if (lengthOfPost < 10) {
-    await User.findByIdAndUpdate(
-      userId,
-      {
-        userAward: 'bronze',
-      },
-      {
-        new: true,
-      }
-    );
-  } else if (lengthOfPost > 10) {
-    await User.findByIdAndUpdate(
-      userId,
-      {
-        userAward: 'silver',
-      },
-      {
-        new: true,
-      }
-    );
-  } else if (lengthOfPost > 20) {
-    await User.findByIdAndUpdate(
-      userId,
-      {
-        userAward: 'gold',
-      },
-      {
-        new: true,
-      }
-    );
-  }
-
-  next();
-});
+//     next();
+//   } catch (error) {
+//     throw error;
+//   }
+// });
 
 // // POST after saving
 
@@ -264,6 +162,17 @@ userSchema.virtual('followersCount').get(function () {
 // GET VIEWERS COUNT
 userSchema.virtual('viewersCount').get(function () {
   return this.viewers.length;
+});
+
+userSchema.virtual('lastLoggedInTime').get(function () {
+  return this.loginTimestamp.toDateString();
+});
+
+userSchema.virtual('isInActive').get(function () {
+  const currentDate = new Date();
+  const differencesInDates = currentDate - this.loginTimestamp;
+  const differenceInDays = differencesInDates / (1000 * 3600 * 24);
+  return differenceInDays >= 30;
 });
 
 // GET BLOCKED USERS COUNT

@@ -53,9 +53,25 @@ const fetchIndividualPost = async (req, res) => {
 // GET ALL POSTS
 const fetchAllPosts = async (req, res) => {
   try {
+    // FIND ALL POSTS
+    const allPosts = await Post.find({})
+      .populate('user')
+      // getting the actual field you want on the populated field, you specify after the field. In this case "title"
+      .populate('category', 'title');
+
+    // CHECK IF LOGGEDIN USER IS BLOCKED BY THE POST AUTHOR
+    const filteredPosts = allPosts.filter((post) => {
+      console.log(post);
+      // get all blocked users
+      const blockedUser = post.user.blocked;
+      console.log(blockedUser);
+      const isBlocked = blockedUser.includes(req.userAuth);
+      // return !isBlocked;
+      return isBlocked ? 'cant view post< user blocked you' : post;
+    });
     res.json({
       status: 'success',
-      data: 'all posts route',
+      data: filteredPosts,
     });
   } catch (error) {
     res.json(error.message);

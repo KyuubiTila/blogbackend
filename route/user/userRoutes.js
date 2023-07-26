@@ -18,6 +18,7 @@ const {
   detailsUpdateController,
   passwordUpdateController,
   deleteAccountController,
+  allBlockedByUser,
 } = require('../../controllers/User/userController.js');
 const isLoggedIn = require('../../middlewares/isLoggedin.js');
 const multer = require('multer');
@@ -73,6 +74,10 @@ userRouter.get('/block/:id', isLoggedIn, blockUserController);
 // UNBLOCK USERS
 // GET/api/V1/users/unblock/:id
 userRouter.get('/unblock/:id', isLoggedIn, unblockUserController);
+
+// VIEW ALL BLOCKED BY USER
+// GET/api/V1/users/all-blocked/:id
+userRouter.get('/all-blocked', isLoggedIn, allBlockedByUser);
 
 // ADMIN BLOCK USERS
 // PUT/api/V1/users/admin-block/:id

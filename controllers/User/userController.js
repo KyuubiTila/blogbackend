@@ -58,6 +58,21 @@ const userLoginController = async (req, res, next) => {
       return next(appError('Invalid login credentials'));
     }
 
+    const loginTimestamp = new Date();
+
+    const updatedTime = await User.findByIdAndUpdate(
+      checkEmail,
+      {
+        loginTimestamp,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    await updatedTime.save();
+
     res.json({
       status: 'success',
       data: {
@@ -66,6 +81,7 @@ const userLoginController = async (req, res, next) => {
         email: checkEmail.email,
         isAdmin: checkEmail.isAdmin,
         token: generateToken(checkEmail._id),
+        time: checkEmail.loginTimestamp,
       },
     });
   } catch (error) {
@@ -110,6 +126,44 @@ const whoViewedMyProfileController = async (req, res, next) => {
 const userIndividualProfileController = async (req, res, next) => {
   try {
     const user = await User.findById(req.userAuth);
+
+    const lastLoggedIn = user.loginTimestamp;
+    console.log(lastLoggedIn);
+
+    // ---------------------check if user is inactive for 30 days -------------------
+    //check for the current date
+    const currentDate = new Date();
+    // check the diference between the last post date and the current date
+    const differencesInDates = currentDate - lastLoggedIn;
+
+    // convert to differnces in days
+    const differenceInDAys = differencesInDates / (1000 * 3600 * 24);
+    console.log(differenceInDAys);
+    // compare to 30 days and block
+    if (30 > differenceInDAys) {
+      // find the user by Id and update
+      await User.findByIdAndUpdate(
+        user,
+        {
+          isBlocked: false,
+        },
+        {
+          new: true,
+        }
+      );
+    } else {
+      // find the user by Id and update
+      await User.findByIdAndUpdate(
+        user,
+        {
+          isBlocked: true,
+        },
+        {
+          new: true,
+        }
+      );
+    }
+
     res.json({
       status: 'success',
       data: user,
@@ -279,6 +333,25 @@ const unblockUserController = async (req, res, next) => {
   }
 };
 
+//VIEW ALL BLOCKED BY USER
+const allBlockedByUser = async (req, res, next) => {
+  try {
+    const userLoggedIn = await User.findById(req.userAuth);
+
+    if (userLoggedIn) {
+      const blockedUsers = userLoggedIn.blocked;
+      res.json({
+        status: 'success',
+        data: blockedUsers,
+      });
+    } else {
+      return next(appError('no user blocked found'));
+    }
+  } catch (error) {
+    return next(appError(error.message));
+  }
+};
+
 // ADMIN BLOCK
 const adminBlockUserController = async (req, res, next) => {
   try {
@@ -424,16 +497,16 @@ const deleteAccountController = async (req, res, next) => {
 };
 
 // UPDATE INDIVIDUAL PROFILE
-const updateProfileController = async (req, res, next) => {
-  try {
-    res.json({
-      status: 'success',
-      data: 'update user route',
-    });
-  } catch (error) {
-    return next(appError(error.message));
-  }
-};
+// const updateProfileController = async (req, res, next) => {
+//   try {
+//     res.json({
+//       status: 'success',
+//       data: 'update user route',
+//     });
+//   } catch (error) {
+//     return next(appError(error.message));
+//   }
+// };
 
 // profile photo upload
 const profilePhotoUploadController = async (req, res, next) => {
@@ -490,7 +563,7 @@ module.exports = {
   userLoginController,
   userIndividualProfileController,
   allUsersProfileController,
-  updateProfileController,
+  // updateProfileController,
   profilePhotoUploadController,
   // deleteProfileController,
   whoViewedMyProfileController,
@@ -503,4 +576,5 @@ module.exports = {
   detailsUpdateController,
   passwordUpdateController,
   deleteAccountController,
+  allBlockedByUser,
 };
