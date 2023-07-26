@@ -53,6 +53,7 @@ const fetchIndividualPost = async (req, res) => {
 // GET ALL POSTS
 const fetchAllPosts = async (req, res) => {
   try {
+    console.log(req.userAuth);
     // FIND ALL POSTS
     const allPosts = await Post.find({})
       .populate('user')
@@ -63,9 +64,9 @@ const fetchAllPosts = async (req, res) => {
     const filteredPosts = allPosts.filter((post) => {
       console.log(post);
       // get all blocked users
-      const blockedUser = post.user.blocked;
-      console.log(blockedUser);
+      const blockedUser = post.user[0].blocked;
       const isBlocked = blockedUser.includes(req.userAuth);
+      console.log(isBlocked);
       // return !isBlocked;
       return isBlocked ? 'cant view post< user blocked you' : post;
     });
