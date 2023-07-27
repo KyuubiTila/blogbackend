@@ -79,6 +79,7 @@ const fetchAllPosts = async (req, res) => {
   }
 };
 
+// TOGGLE LIKE
 const toggleLikesOfPost = async (req, res) => {
   try {
     // find the user liking the post
@@ -96,6 +97,37 @@ const toggleLikesOfPost = async (req, res) => {
       await post.save();
     } else {
       post.likes.push(req.userAuth);
+      await post.save();
+    }
+    res.json({
+      status: 'success',
+      data: post,
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+// TOGGLE DISLIKE
+const toggleDisikesOfPost = async (req, res) => {
+  try {
+    // find the user liking the post
+    // const userLkingPost = await User.findById(req.userAuth);
+
+    // find the post being liked
+    const post = await Post.findById(req.params.id);
+
+    // check if user already liked the post
+    const isDisliked = post.disLikes.includes(req.userAuth);
+    console.log(isDisliked);
+
+    if (isDisliked) {
+      post.disLikes = post.disLikes.filter(
+        (dislike) => dislike != req.userAuth
+      );
+      await post.save();
+    } else {
+      post.disLikes.push(req.userAuth);
       await post.save();
     }
     res.json({
@@ -138,4 +170,5 @@ module.exports = {
   updateIndividualPost,
   deleteIndividualPost,
   toggleLikesOfPost,
+  toggleDisikesOfPost,
 };
