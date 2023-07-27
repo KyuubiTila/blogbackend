@@ -65,6 +65,14 @@ const postSchema = new mongoose.Schema(
 postSchema.virtual('numViewsCount').get(function () {
   return this.numViews.length;
 });
+
+postSchema.virtual('likesCount').get(function () {
+  return this.likes.length;
+});
+
+postSchema.virtual('dislikesCount').get(function () {
+  return this.disLikes.length;
+});
 //Compile the Post model
 const Post = mongoose.model('Post', postSchema);
 
