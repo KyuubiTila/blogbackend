@@ -19,7 +19,7 @@ postRouter.post('/', isLoggedIn, createIndividualPost);
 
 // GET INDIVIDUAL POST
 // GET/api/V1/posts/:id
-postRouter.get('/:id', fetchIndividualPost);
+postRouter.get('/:id', isLoggedIn, fetchIndividualPost);
 
 // GET ALL POSTS
 // GET/api/V1/posts

@@ -41,10 +41,28 @@ const createIndividualPost = async (req, res, next) => {
 // GET INDIVIDUAL POST
 const fetchIndividualPost = async (req, res) => {
   try {
-    res.json({
-      status: 'success',
-      data: 'post route',
-    });
+    // find the user viewing the post
+    const userviewingPost = await User.findById(req.userAuth);
+
+    // FIND THE POST
+    const findPost = await Post.findById(req.params.id);
+    console.log(findPost.numViews.length);
+    // CHECK IF USER VIWED THE POST
+    const isViewed = findPost.numViews.includes(userviewingPost);
+    if (isViewed) {
+      res.json({
+        status: 'success',
+        data: findPost,
+      });
+    } else {
+      //PUSH THE USER INTO THE VIEWS ARRAY
+      findPost.numViews.push(userviewingPost);
+      await findPost.save();
+      res.json({
+        status: 'success',
+        data: findPost,
+      });
+    }
   } catch (error) {
     res.json(error.message);
   }

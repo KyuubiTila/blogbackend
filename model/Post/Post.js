@@ -57,9 +57,14 @@ const postSchema = new mongoose.Schema(
 
   {
     timestamps: true,
+    toJSON: { virtuals: true },
   }
 );
 
+// GET NUMBER OF VIEWS COUNT
+postSchema.virtual('numViewsCount').get(function () {
+  return this.numViews.length;
+});
 //Compile the Post model
 const Post = mongoose.model('Post', postSchema);
 
