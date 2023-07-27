@@ -5,6 +5,7 @@ const {
   fetchAllPosts,
   updateIndividualPost,
   deleteIndividualPost,
+  toggleLikesOfPost,
 } = require('../../controllers/Post/postController');
 const isLoggedIn = require('../../middlewares/isLoggedin');
 const postRouter = express.Router();
@@ -22,6 +23,10 @@ postRouter.get('/:id', fetchIndividualPost);
 // GET ALL POSTS
 // GET/api/V1/posts
 postRouter.get('/', isLoggedIn, fetchAllPosts);
+
+// GET LIKES
+// GET/api/V1/posts
+postRouter.get('/likes/:id', isLoggedIn, toggleLikesOfPost);
 
 // UPDATE INDIVIDUAL POST
 // PUT/api/V1/posts/:id

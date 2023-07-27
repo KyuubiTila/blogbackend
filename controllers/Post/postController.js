@@ -79,6 +79,34 @@ const fetchAllPosts = async (req, res) => {
   }
 };
 
+const toggleLikesOfPost = async (req, res) => {
+  try {
+    // find the user liking the post
+    // const userLkingPost = await User.findById(req.userAuth);
+
+    // find the post being liked
+    const post = await Post.findById(req.params.id);
+
+    // check if user already liked the post
+    const isLiked = post.likes.includes(req.userAuth);
+    console.log(isLiked);
+
+    if (isLiked) {
+      post.likes = post.likes.filter((like) => like != req.userAuth);
+      await post.save();
+    } else {
+      post.likes.push(req.userAuth);
+      await post.save();
+    }
+    res.json({
+      status: 'success',
+      data: post,
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
 // UPDATE INDIVIDUAL POST
 const updateIndividualPost = async (req, res) => {
   try {
@@ -109,4 +137,5 @@ module.exports = {
   fetchAllPosts,
   updateIndividualPost,
   deleteIndividualPost,
+  toggleLikesOfPost,
 };
