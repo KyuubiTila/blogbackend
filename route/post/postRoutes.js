@@ -44,6 +44,6 @@ postRouter.put('/:id', updateIndividualPost);
 
 // DELETE INDIVIDUAL POST
 // DELETE/api/V1/posts/:id
-postRouter.delete('/:id', deleteIndividualPost);
+postRouter.delete('/:id', isLoggedIn, deleteIndividualPost);
 
 module.exports = postRouter;

@@ -112,6 +112,7 @@ const toggleLikesOfPost = async (req, res) => {
     const isLiked = post.likes.includes(req.userAuth);
     console.log(isLiked);
 
+    // REMOVE USER'S LIKE
     if (isLiked) {
       post.likes = post.likes.filter((like) => like != req.userAuth);
       await post.save();
@@ -136,12 +137,16 @@ const toggleDisikesOfPost = async (req, res) => {
 
     // find the post being liked
     const post = await Post.findById(req.params.id);
+    console.log(post);
 
     // check if user already liked the post
     const isDisliked = post.disLikes.includes(req.userAuth);
     console.log(isDisliked);
 
+    // REMOVE USER'S DISLIKE
     if (isDisliked) {
+      //The filter method creates a new array containing all the elements of post.disLikes
+      // except the one that matches req.userAuth. This effectively removes the user's dislike from the array
       post.disLikes = post.disLikes.filter(
         (dislike) => dislike != req.userAuth
       );
@@ -172,11 +177,30 @@ const updateIndividualPost = async (req, res) => {
 };
 
 // DELETE INDIVIDUAL POST
-const deleteIndividualPost = async (req, res) => {
+const deleteIndividualPost = async (req, res, next) => {
   try {
+    //FIND USER WHO IS DELETING POST
+    const postDeleter = await User.findById(req.userAuth);
+
+    // FIND POST TO BE DELETED
+    const postToBeDeleted = await Post.findById(req.params.id);
+    console.log(postToBeDeleted.user.toString());
+    console.log(postDeleter._id.toString());
+
+    if (postToBeDeleted.user.toString() !== postDeleter._id.toString()) {
+      return next(
+        appError('you can not delete this post, you did not publish it', 403)
+      );
+    } else {
+      await postToBeDeleted.deleteOne();
+      // await Post.findByIdAndDelete(req.params.id);
+    }
+    // if (postDeleter && postToBeDeleted) {
+
+    // }
     res.json({
       status: 'success',
-      data: 'delete post route',
+      data: 'you have deleted your post successfully',
     });
   } catch (error) {
     res.json(error.message);
