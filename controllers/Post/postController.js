@@ -165,11 +165,35 @@ const toggleDisikesOfPost = async (req, res) => {
 };
 
 // UPDATE INDIVIDUAL POST
-const updateIndividualPost = async (req, res) => {
+const updateIndividualPost = async (req, res, next) => {
+  const { title, description, category } = req.body;
   try {
+    //FIND USER WHO IS UPDATING POST
+    const postUpdater = await User.findById(req.userAuth);
+
+    // FIND POST TO BE UPDATED
+    const postToBeUpdated = await Post.findById(req.params.id);
+
+    if (postToBeUpdated.user.toString() !== postUpdater._id.toString()) {
+      return next(
+        appError('you can not update this post, you did not publish it', 403)
+      );
+    }
+    await Post.findOneAndUpdate(
+      postToBeUpdated._id,
+      {
+        title,
+        description,
+        category,
+        photo: req?.file?.path,
+      },
+      {
+        new: true,
+      }
+    );
     res.json({
       status: 'success',
-      data: 'update post route',
+      data: postToBeUpdated,
     });
   } catch (error) {
     res.json(error.message);

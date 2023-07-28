@@ -40,7 +40,12 @@ postRouter.get('/dislikes/:id', isLoggedIn, toggleDisikesOfPost);
 
 // UPDATE INDIVIDUAL POST
 // PUT/api/V1/posts/:id
-postRouter.put('/:id', updateIndividualPost);
+postRouter.put(
+  '/:id',
+  isLoggedIn,
+  upload.single('image'),
+  updateIndividualPost
+);
 
 // DELETE INDIVIDUAL POST
 // DELETE/api/V1/posts/:id
