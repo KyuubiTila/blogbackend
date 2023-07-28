@@ -41,7 +41,7 @@ const createIndividualPost = async (req, res, next) => {
 };
 
 // GET INDIVIDUAL POST
-const fetchIndividualPost = async (req, res) => {
+const fetchIndividualPost = async (req, res, next) => {
   try {
     // find the user viewing the post
     const userviewingPost = await User.findById(req.userAuth);
@@ -66,12 +66,12 @@ const fetchIndividualPost = async (req, res) => {
       });
     }
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
 // GET ALL POSTS
-const fetchAllPosts = async (req, res) => {
+const fetchAllPosts = async (req, res, next) => {
   try {
     console.log(req.userAuth);
     // FIND ALL POSTS
@@ -95,12 +95,12 @@ const fetchAllPosts = async (req, res) => {
       data: filteredPosts,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
 // TOGGLE LIKE
-const toggleLikesOfPost = async (req, res) => {
+const toggleLikesOfPost = async (req, res, next) => {
   try {
     // find the user liking the post
     // const userLkingPost = await User.findById(req.userAuth);
@@ -125,12 +125,12 @@ const toggleLikesOfPost = async (req, res) => {
       data: post,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
 // TOGGLE DISLIKE
-const toggleDisikesOfPost = async (req, res) => {
+const toggleDisikesOfPost = async (req, res, next) => {
   try {
     // find the user liking the post
     // const userLkingPost = await User.findById(req.userAuth);
@@ -160,7 +160,7 @@ const toggleDisikesOfPost = async (req, res) => {
       data: post,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
@@ -196,7 +196,7 @@ const updateIndividualPost = async (req, res, next) => {
       data: postToBeUpdated,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
@@ -227,7 +227,7 @@ const deleteIndividualPost = async (req, res, next) => {
       data: 'you have deleted your post successfully',
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
