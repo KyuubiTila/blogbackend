@@ -4,6 +4,7 @@ const appError = require('../../utils/appError');
 
 // CREATE INDIVIDUAL POST
 const createIndividualPost = async (req, res, next) => {
+  console.log(req.file);
   try {
     //destructure the element requird for the post creation from the request body
     const { title, description, category } = req.body;
@@ -22,6 +23,7 @@ const createIndividualPost = async (req, res, next) => {
       description,
       user: author._id,
       category,
+      photo: req?.file?.path,
     });
 
     //3. PUSH THE POST INTO THE POST BODY

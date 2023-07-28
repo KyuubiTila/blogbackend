@@ -10,12 +10,17 @@ const {
 } = require('../../controllers/Post/postController');
 const isLoggedIn = require('../../middlewares/isLoggedin');
 const postRouter = express.Router();
+const multer = require('multer');
+const storage = require('../../config/cloudinary');
+
+// FILE UPLOAD
+const upload = multer({ storage });
 
 // CREATE INDIVIDUAL POST
 // POST/api/V1/posts
 // to create the post, express has to go through the loggedin middleware and check has to be in place before nexting
 // you can not comment when not logged in
-postRouter.post('/', isLoggedIn, createIndividualPost);
+postRouter.post('/', isLoggedIn, upload.single('image'), createIndividualPost);
 
 // GET INDIVIDUAL POST
 // GET/api/V1/posts/:id

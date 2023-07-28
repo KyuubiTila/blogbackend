@@ -14,7 +14,7 @@ const storage = new CloudinaryStorage({
   cloudinary,
   allowedFormats: ['jpeg', 'png'],
   params: {
-    folder: 'blog-api',
+    folder: 'blogbackend',
     transformation: [{ width: 500, height: 500, crop: 'limit' }],
   },
 });
