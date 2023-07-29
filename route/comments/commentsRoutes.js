@@ -22,6 +22,6 @@ commentsRouter.delete('/:id', deleteIndividualCommentController);
 
 // UPDATE INDIVIDUAL COMMENT
 // PUT/api/V1/comments/:id
-commentsRouter.put('/:id', updateIndividualCommentController);
+commentsRouter.put('/:id', isLoggedIn, updateIndividualCommentController);
 
 module.exports = commentsRouter;

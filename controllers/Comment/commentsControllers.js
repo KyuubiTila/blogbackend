@@ -64,14 +64,39 @@ const deleteIndividualCommentController = async (req, res) => {
 };
 
 // UPDATE INDIVIDUAL COMMENT
-const updateIndividualCommentController = async (req, res) => {
+const updateIndividualCommentController = async (req, res, next) => {
+  const { description } = req.body;
+
   try {
+    // FIND USER UPDATING A COMMENT
+    const commentUpdater = await User.findById(req.userAuth);
+    console.log(commentUpdater._id);
+    // FIND COMMENT TO BE UPDATED
+    const commentToBeUpdated = await Comment.findById(req.params.id);
+    console.log(commentToBeUpdated.user._id);
+
+    if (
+      commentUpdater._id.toString() !== commentToBeUpdated.user._id.toString()
+    ) {
+      return next(
+        appError('You can not update this comment, you did not create it')
+      );
+    }
+
+    const category = await Comment.findByIdAndUpdate(
+      commentToBeUpdated._id,
+      { description },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     res.json({
       status: 'success',
-      data: 'update comment route',
+      data: category,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 module.exports = {
