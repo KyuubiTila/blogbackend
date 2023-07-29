@@ -18,7 +18,7 @@ commentsRouter.get('/:id', fetchIndividualCommentController);
 
 // DELETE INDIVIDUAL COMMENT
 // DELETE/api/V1/comments/:id
-commentsRouter.delete('/:id', deleteIndividualCommentController);
+commentsRouter.delete('/:id', isLoggedIn, deleteIndividualCommentController);
 
 // UPDATE INDIVIDUAL COMMENT
 // PUT/api/V1/comments/:id

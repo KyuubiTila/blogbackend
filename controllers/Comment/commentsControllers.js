@@ -52,14 +52,30 @@ const fetchIndividualCommentController = async (req, res) => {
 };
 
 // DELETE INDIVIDUAL COMMENT
-const deleteIndividualCommentController = async (req, res) => {
+const deleteIndividualCommentController = async (req, res, next) => {
   try {
+    // FIND USER UPDATING A COMMENT
+    const commentDeleter = await User.findById(req.userAuth);
+    console.log(commentDeleter._id);
+    // FIND COMMENT TO BE UPDATED
+    const commentToBeDeleted = await Comment.findById(req.params.id);
+    console.log(commentToBeDeleted.user._id);
+
+    if (
+      commentDeleter._id.toString() !== commentToBeDeleted.user._id.toString()
+    ) {
+      return next(
+        appError('You can not update this comment, you did not create it')
+      );
+    }
+
+    await Comment.findByIdAndDelete(commentToBeDeleted._id);
     res.json({
       status: 'success',
-      data: 'delete comment route',
+      data: 'comment deleted successfully',
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 
