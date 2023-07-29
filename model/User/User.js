@@ -1,8 +1,4 @@
-// const { default: mongoose } = require('mongoose');
-
 const mongoose = require('mongoose');
-const appError = require('../../utils/appError');
-const Post = require('../Post/Post');
 
 // create schema
 const userSchema = new mongoose.Schema(
@@ -76,6 +72,13 @@ const userSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post',
+      },
+    ],
+
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comment',
       },
     ],
 

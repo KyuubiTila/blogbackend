@@ -1,12 +1,41 @@
+const Comment = require('../../model/Comment/Comment');
+const Post = require('../../model/Post/Post');
+const User = require('../../model/User/User');
+const appError = require('../../utils/appError');
+
 // CREATE COMMENT
-const createCommentController = async (req, res) => {
+const createCommentController = async (req, res, next) => {
+  const { description } = req.body;
   try {
+    // FIND USER WHO IS CREATING THE COMMENT
+    const commentCreator = await User.findById(req.userAuth);
+
+    //FIND THE POST TO BE COMMENTED ON
+    const commentPost = await Post.findById(req.params.id);
+
+    // CREATE COMMENT
+    const comment = await Comment.create({
+      post: commentPost._id,
+      description,
+      user: commentCreator._id,
+    });
+
+    // PUSH THE COMMENT TO POST
+    commentPost.comments.push(comment._id);
+
+    // PUSH THE COMMENT TO USER
+    commentCreator.comments.push(comment._id);
+
+    // SAVE COMMENT
+    await commentCreator.save();
+    await commentPost.save();
+
     res.json({
       status: 'success',
-      data: 'comment created',
+      data: comment,
     });
   } catch (error) {
-    res.json(error.message);
+    return next(appError(error.message));
   }
 };
 

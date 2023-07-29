@@ -6,10 +6,11 @@ const {
   updateIndividualCommentController,
 } = require('../../controllers/Comment/commentsControllers');
 const commentsRouter = express.Router();
+const isLoggedIn = require('../../middlewares/isLoggedin');
 
 // CREATE COMMENT
 // POST/api/V1/comments
-commentsRouter.post('/', createCommentController);
+commentsRouter.post('/:id', isLoggedIn, createCommentController);
 
 // GET INDIVIDUAL COMMENT
 // GET/api/V1/comments/:id
